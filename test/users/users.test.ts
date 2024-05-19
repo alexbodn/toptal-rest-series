@@ -2,7 +2,7 @@ import app from '../../app';
 import supertest from 'supertest';
 import { expect } from 'chai';
 import shortid from 'shortid';
-import mongoose from 'mongoose';
+import prismaService from '../../common/services/prisma.service';
 
 let firstUserIdTest = '';
 const firstUserBody = {
@@ -23,8 +23,12 @@ describe('users and auth endpoints', function () {
     });
     after(function (done) {
         // shut down the Express.js server, close our MongoDB connection, then tell Mocha we're done:
-        app.close(() => {
-            mongoose.connection.close(done);
+        app.close(async () => {
+            await prismaService.users.deleteMany({
+                where: {email: firstUserBody.email},
+            })
+            prismaService.$disconnect();
+            done()
         });
     });
 
