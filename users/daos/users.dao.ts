@@ -32,7 +32,10 @@ removeHidden(user: any) {
 async addUser(user: CreateUserDto) {
     let data = user as any;
     data.id = shortid.generate();
-    data.permissionFlags = PermissionFlag.FREE_PERMISSION;
+    const usersCount = await this.getUsersCount();
+    if (usersCount > 0) {
+        data.permissionFlags = PermissionFlag.FREE_PERMISSION;
+    }
     const added = await prismaService.users.create({data});
     return added.id;
 }
@@ -115,6 +118,11 @@ async patchUserById(userId: string, user: PatchUserDto) {
 async removeUserById(userId: string) {
     await prismaService.users.delete({where: {id: userId}});
     return `${userId} removed`;
+}
+
+async getUsersCount() {
+    const userCount = await prismaService.users.count()
+    return userCount;
 }
 }
 

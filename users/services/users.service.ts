@@ -35,6 +35,9 @@ class UsersService implements CRUD {
     async getUserByEmailWithPassword(email: string) {
         return UsersDao.getUserByEmailWithPassword(email);
     }
+    async getUsersCount() {
+        return UsersDao.getUsersCount();
+    }
 }
 
 export default new UsersService();
